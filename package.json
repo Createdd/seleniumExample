@@ -1,0 +1,10 @@
+{
+  "name": "seleniumExample",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "DanielDeutsch <deudan1010@gmail.com>",
+  "license": "none",
+  "dependencies": {
+    "selenium-webdriver": "^3.4.0"
+  }
+}
