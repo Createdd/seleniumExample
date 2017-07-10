@@ -1,6 +1,4 @@
-// import cred from './cred';
-const cred = require("./cred");
-
+const cred = require('./cred');
 var promise = require('selenium-webdriver').promise;
 
 //setup
@@ -9,48 +7,9 @@ var webdriver = require('selenium-webdriver'),
 	until = webdriver.until;
 
 var driver = new webdriver.Builder().forBrowser('chrome').build();
-
 driver.manage().window().maximize();
 
-//actions
-driver.get('https://secure.meetup.com/login/');
-
-var mail = driver.findElement(webdriver.By.id('email'));
-var pass = driver.findElement(webdriver.By.id('password'));
-
-mail.sendKeys(cred.cred.user);
-pass.sendKeys(cred.cred.pass);
-
-driver.findElement(webdriver.By.name('submitButton')).click();
-
-driver
-	.findElement(
-		webdriver.By.className(
-			'valign--middle display--none atMedium_display--inline'
-		)
-	)
-	.click();
-
-driver.findElement(webdriver.By.xpath('//a[text()="Settings"]')).click();
-
-driver.findElement(webdriver.By.xpath('//a[text()="Email Updates"]')).click();
-
-const list = driver.findElements(
-	webdriver.By.xpath('//li[@class="list-item"]/a')
-);
-
-list.then(function(elements) {
-	var pendingHtml = elements.map(function(elem) {
-		return elem.getAttribute('href');
-	});
-	promise.all(pendingHtml).then(function(allHtml) {
-		allHtml.forEach(element => {
-			driver.navigate().to(element);
-			clickingAll();
-		});
-	});
-});
-
+//click function
 var clickingAll = () => {
 	driver
 		.findElements(
@@ -86,5 +45,41 @@ var clickingAll = () => {
 	}
 	driver.navigate().back();
 };
+
+//actions
+driver.get('https://secure.meetup.com/login/');
+
+var mail = driver.findElement(webdriver.By.id('email'));
+var pass = driver.findElement(webdriver.By.id('password'));
+
+mail.sendKeys(cred.cred.user);
+pass.sendKeys(cred.cred.pass);
+
+driver.findElement(webdriver.By.name('submitButton')).click();
+driver
+	.findElement(
+		webdriver.By.className(
+			'valign--middle display--none atMedium_display--inline'
+		)
+	)
+	.click();
+driver.findElement(webdriver.By.xpath('//a[text()="Settings"]')).click();
+driver.findElement(webdriver.By.xpath('//a[text()="Email Updates"]')).click();
+
+const list = driver.findElements(
+	webdriver.By.xpath('//li[@class="list-item"]/a')
+);
+
+list.then(function(elements) {
+	var links = elements.map(elem => {
+		return elem.getAttribute('href');
+	});
+	promise.all(links).then(linkRefs => {
+		linkRefs.forEach(element => {
+			driver.navigate().to(element);
+			clickingAll();
+		});
+	});
+});
 
 driver.quit();
